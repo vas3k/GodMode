@@ -1,0 +1,99 @@
+{% extends "mongo.html" %}
+
+{% block body %}
+<div class="info">
+    <form action="." method="get">
+        <div class="info__item"><strong>rows: {{ count }}</strong></div>
+        <div class="info__item"><strong>time: {{ exec_time|round(6) }} sec</strong></div>
+    </form>
+</div>
+
+{% if model.plotable %}
+    {% include "blocks/plot.html" %}
+{% endif %}
+
+<div class="actions">
+    {% if model.creatable %}
+        <a href="/mongo/{{ model.collection }}/new/" class="action"><i class="icon-circleadd"></i>&nbsp;создать</a>
+    {% endif %}
+    {% if model.deletable %}
+        <a href="/mongo/{{ model.collection }}/delete/" id="delete-multi" class="action"><i class="icon-remove-sign"></i>&nbsp;удалить выбранные</a>
+    {% endif %}
+</div>
+
+<div class="paginator">
+    {% if offset > 0 %}
+        <a href="{{ magic_params(request, 'offset', max(offset - limit, 0)) }}" class="paginator__page">&larr;</a>
+    {% endif %}
+    {% if offset + limit < count %}
+        <a href="{{ magic_params(request, 'offset', min(offset + limit, count)) }}" class="paginator__page">&rarr;</a>
+    {% endif %}
+</div>
+
+<div class="rows">
+    <table class="rows">
+        <thead>
+            <tr>
+                <td class="rows__small"><input type="checkbox" class="check-all"></td>
+                {% if model.editable %}<td class="rows__small">&nbsp;</td>{% endif %}
+                {% for column in columns %}
+                    <td>
+                        {% if order_by == column %}
+                            <a href="{{ magic_params(request, 'order_by', '-' + column) }}">{{ column }}</a>&nbsp;&darr;
+                        {% elif order_by == "-" + column %}
+                            <a href="{{ magic_params(request, 'order_by', column) }}">{{ column }}</a>&nbsp;&uarr;
+                        {% else %}
+                            <a href="{{ magic_params(request, 'order_by', column) }}">{{ column }}</a>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        </thead>
+        {% for row in rows %}
+            <tr style="{% for k, v in row.style.items() %}{{ k }}: {{ v }};{% endfor %}">
+                <td><input type="checkbox" data-id="{{ row.row[0].value }}"></td>
+                {% if model.editable %}<td><a href="/mongo/{{ model.collection }}/{{ row.row[0].value }}/"><i class="icon-edit"></i></a></td>{% endif %}
+                {% for item in row.row %}
+                    {% if loop.first and model.editable %}
+                        <td>
+                            <a href="/mongo/{{ model.collection }}/{{ item.value }}/"><strong>{{ item.value }}</strong></a>
+                        </td>
+                    {% elif item.value != None %}
+                        <td>
+                            {% if item.type == "bool" %}
+                                {% if item.value %}<i class="icon-ok"></i>{% else %}<i class="icon-remove"></i>{% endif %}
+                            {% elif item.type == "dict" %}
+                                {% for k, v in item.value.iteritems() %}{{ k }}: {{ v }}<br>{% endfor %}
+                            {% elif item.type == "list" %}
+                                {% for a in item.value[:4] %}{{ a }}<br>{% endfor %}
+                            {% else %}
+                                {{ item.value }}
+                            {% endif %}
+
+                            {% if item.choice %}
+                                &rarr;{{ item.choice }}
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td>
+                            <small>NULL</small>
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% if not rows %}
+    <div class="message">Ничего нет :(</div>
+{% endif %}
+
+<div class="paginator">
+    {% if offset > 0 %}
+        <a href="{{ magic_params(request, 'offset', max(offset - limit, 0)) }}" class="paginator__page">&larr;</a>
+    {% endif %}
+    {% if offset + limit < count %}
+        <a href="{{ magic_params(request, 'offset', min(offset + limit, count)) }}" class="paginator__page">&rarr;</a>
+    {% endif %}
+</div>
+{% endblock %}

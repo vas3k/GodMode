@@ -1,0 +1,45 @@
+{% extends "sql.html" %}
+
+{% block body %}
+<div class="object">
+    {% if object %}
+    <form method="post" action="/db/{{ model.db_table }}/{{ object.id }}/save/">
+    {% else %}
+    <form method="post" action="/db/{{ model.db_table }}/new/save/">
+    {% endif %}
+        {% for column in model.columns %}
+            {% if object or not column.name == model.id_field %}
+                <div class="object-row">
+                    <div class="object-row__key">
+                        {{ column.name }}
+                        <span class="object-row__info">{{ column.column.type }}</span>
+                    </div>
+                    <div class="object-row__value {% if not column.column.nullable %}object-row__value_type_required{% endif %}">
+                        {% if column.type_len > 100 or column.type in ('text', 'longtext', 'blob') %}
+                            <textarea name="{{ column.name }}">{{ object[column.name] if object and object[column.name] != None else '' }}</textarea>
+                        {% elif column.type in ('int', 'integer', 'smallint', 'tinyint', 'bigint') %}
+                            <input type="number" name="{{ column.name }}" value="{{ object[column.name] if object and object[column.name] != None else '' }}" maxlength="{{ column.type_len }}">
+                        {% elif column.type in ('datetime', 'timestamp with time zone') %}
+                            <input type="datetime-local" name="{{ column.name }}" value="{{ object[column.name] if object and object[column.name] != None else '' }}" step="1">
+                        {% elif column.type in ('boolean', 'bool') %}
+                            <input type="checkbox" name="{{ column.name }}" {% if object and object[column.name] %}checked{% endif %}>
+                        {% else %}
+                            <input type="text" name="{{ column.name }}" value="{{ object[column.name] if object and object[column.name] != None else '' }}" maxlength="{{ column.type_len }}">
+                        {% endif %}
+
+                        {% if column.name in model.Fields.tips %}
+                            <div class="object-row__tip">{{ model.Fields.tips[column.name] }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if object %}
+        <input type="submit" value="Сохранить">
+        {% else %}
+        <input type="submit" value="Создать">
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

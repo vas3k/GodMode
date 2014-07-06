@@ -1,0 +1,16 @@
+<div class="plot">
+    <canvas id="list-plot" width="1000" height="180"></canvas>
+</div>
+<script type="text/javascript">
+    $(function() {
+        var options = {
+            bezierCurve: true,
+            pointDotRadius : 3,
+            pointDotStrokeWidth : 1,
+            animation: false
+        };
+        var data = {{ model.plot() | tojson | safe }};
+        var ctx = document.getElementById("list-plot").getContext("2d");
+        var myNewChart = new Chart(ctx).Line(data, options);
+    });
+</script>

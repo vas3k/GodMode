@@ -1,0 +1,21 @@
+<uwsgi>
+    <uid>cards</uid>
+	<plugins>python27,http</plugins>
+    <socket>/tmp/godmode.sock</socket>
+    <chmod-socket>666</chmod-socket>
+    <chdir>/path/to/GodMode</chdir>
+    <pythonpath>/path/to/SmthElse</pythonpath>
+    <pythonpath>/path/to/GodMode</pythonpath>
+    <module>app.app</module>
+    <callable>app</callable>
+    <daemonize>/path/to/logs/godmode-uwsgi.log</daemonize>
+    <harakiri>30</harakiri>
+    <buffer-size>32768</buffer-size>
+    <post-buffering>8192</post-buffering>
+    <post-buffering-bufsize>65536</post-buffering-bufsize>
+    <max-requests>1000</max-requests>
+    <disable-logging/>
+    <listen>100</listen>
+    <master/>
+    <workers>1</workers>
+</uwsgi>

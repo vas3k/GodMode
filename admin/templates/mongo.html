@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+
+{% block sidebar %}
+    {% for item in admin.mongodb_models %}
+    <a href="/mongo/{{ item.collection }}/" class="sidebar__item {% if model and item.collection == model.collection %}sidebar__item_active_true{% endif %}">
+        <i class="{{ item.icon }}"></i>&nbsp;{{ item.name if item.name != None else item.collection }}</a>
+    {% endfor %}
+{% endblock %}

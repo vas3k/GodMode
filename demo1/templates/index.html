@@ -1,0 +1,42 @@
+<style>
+    .index-body {
+        overflow: hidden;
+        max-width: 1000px;
+        margin: 30px auto 40px;
+        padding: 0 30px;
+    }
+
+    .title {
+        font-size: 22px;
+        font-weight: 400;
+        margin-bottom: 20px;
+    }
+
+    .img {
+        display: block;
+        width: 485px;
+        height: 325px;
+        float: left;
+        margin-right: 15px;
+        margin-bottom: 15px;
+        background-repeat: no-repeat;
+    }
+</style>
+
+{% if request.path.startswith('/mongo/') %}
+<div class="index-body">
+    <div class="title">MongoDB</div>
+    <div class="img" style="background-image: url('http://i.imgur.com/FsrMRO2.png');"></div>
+    <div class="img" style="background-image: url('http://i.imgur.com/qQHff0P.png');"></div>
+    <div class="img" style="background-image: url('http://i.imgur.com/qQHff0P.png');"></div>
+    <div class="img" style="background-image: url('http://i.imgur.com/FsrMRO2.png');"></div>
+</div>
+{% else %}
+<div class="index-body">
+    <div class="title">App</div>
+    <div class="img" style="background-image: url('http://i.imgur.com/qQHff0P.png');"></div>
+    <div class="img" style="background-image: url('http://i.imgur.com/FsrMRO2.png');"></div>
+    <div class="img" style="background-image: url('http://i.imgur.com/FsrMRO2.png');"></div>
+    <div class="img" style="background-image: url('http://i.imgur.com/qQHff0P.png');"></div>
+</div>
+{% endif %}
